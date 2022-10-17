@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import Link from 'next/link';
-import Head from 'next/head';
 
 // Styling
 import Layout from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 
 // Data
-import { getGeneralInfo, getAllPlayerQueryOptions } from '../lib/FPLDataService';
+import { getGeneralInfo, getAllPlayerQueryOptions, getAllTeamCodes } from '../lib/FPLDataService';
 import { order, getTeamNameFromTeamCode, getFirstOccurenceOfPropertyValueFromArray } from "../lib/FPLDataProcessor";
 
 // Components
@@ -21,6 +19,7 @@ export async function getStaticProps() {
     const teams = data.teams
     //const playersTransfersIn = order(players, "transfers_in")
 
+    console.log(teams)
     return {
         props: {
             players: players,
@@ -70,6 +69,16 @@ export default function PlayerQueryPage({ players, teams }) {
                 <div className={utilStyles.lightText}>
                     <p>This is a tool to query all the FPL players based on various statistics. This tool is helpful for filtering players based on your current needs or for exploring the performance of different players.</p>
                     
+                    <p className={utilStyles.lightText}>Notes:</p>
+                    <ul>
+                        <li className={utilStyles.listItem}>Selecting "Position" as a query will label the data as "element-type" where 
+                            <br />1 = Goalkeepers 
+                            <br />2 = Defenders 
+                            <br />3 = Midfielders 
+                            <br />4 = Forwards 
+                        </li>
+                    </ul>
+
                     <Dropdown 
                         label="Query By: "
                         options={playerQueryOptions}
@@ -78,7 +87,7 @@ export default function PlayerQueryPage({ players, teams }) {
                     />
                     <br />
                     <p>Included team codes: {includedTeams.map((teamCode) => (
-                        getTeamNameFromTeamCode(teams, teamCode)
+                        getTeamNameFromTeamCode(teams, teamCode) + ", "
                     ))}</p>
                     <TeamSelector 
                         teams={teams}

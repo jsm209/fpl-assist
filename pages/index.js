@@ -31,20 +31,26 @@ export default function Home() {
             <a>Player Query</a>
           </Link>
           <br />
+          <Link href={'/player-scatterplot'}>
+            <a>Player Scatterplot</a>
+          </Link>
+          <br />
           <Link href={'/about'}>
             <a>Team Query</a>
           </Link>
           <br />
           <Link href={'/about'}>
             <a>Fixture Viewer</a>
+            {/* <p>Show a list of fixtures, clicking a fixture loads the strength into two bar graphs, 
+              lists out the team's players ordered by cost, showing their total points scored, position, and injuries</p> */}
           </Link>
           <br />
           <Link href={'/about'}>
-            <a>Player Suggestor</a>
+            <a>Player Suggestor (Under Construction)</a>
           </Link>
           <br />
           <Link href={'/about'}>
-            <a>Detailed Player Performance Over Time</a>
+            <a>Detailed Player Performance Over Time (Under Construction)</a>
           </Link>
         </div>
       </section>
