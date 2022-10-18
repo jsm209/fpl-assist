@@ -1,17 +1,18 @@
 import { getAllTeams } from "../lib/FPLDataService";
+import utilStyles from '../styles/utils.module.css';
 
 export default function TeamSelector({teams, onChange }) {
 
     return (
-        <div>
-            <p>Teams:</p>
+        <div className={utilStyles.teamSelectorFlexbox}>
             {teams.map((team) => (
-                <div key={team.code}>
-                    <input value={team.code} type="checkbox" onChange={onChange} />
-                    <span>{team.name}</span>
+                <div key={team.code} className={utilStyles.paddingRight}>
+                    <label>
+                        <input value={team.code} type="checkbox" onChange={onChange} />
+                        {team.name}
+                    </label>
                 </div>
             ))}
         </div>
     );
 };
-

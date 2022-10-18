@@ -58,3 +58,17 @@
   .overflow {
     overflow: scroll;
   }
+
+  .teamSelectorFlexbox {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .paddingRight {
+    padding-right: 10px;
+  }
+
+  .playerQueryTable {
+    border-spacing: 10px;
+    border-collapse: separate;
+  }

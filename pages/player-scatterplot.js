@@ -5,8 +5,8 @@ import Layout from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 
 // Data
-import { getGeneralInfo, getAllPlayerQueryOptions } from '../lib/FPLDataService';
-import { getTeamNameFromTeamCode, prepareScatterplotPlayerData } from "../lib/FPLDataProcessor";
+import { getGeneralInfo, getAllPlayerQueryOptions, } from '../lib/FPLDataService';
+import { getTeamNameFromTeamCode, prepareScatterplotPlayerData, getPositionNameFromElementType } from "../lib/FPLDataProcessor";
 
 // Components
 import Dropdown from '../components/dropdown';
@@ -63,7 +63,8 @@ export default function PlayerScatterplotPage({ players, teams }) {
                         let label = "";
                         for (let index in context) {
                             let teamName =  getTeamNameFromTeamCode(teams, context[index].raw.playerData.team_code)
-                            label = label + context[index].raw.name + " (" + teamName + ")" + "\n"
+                            let position = getPositionNameFromElementType(context[index].raw.playerData.element_type)
+                            label = label + context[index].raw.name + " (" + teamName + ", " + position + ")" + "\n"
                         }
                         return label
                     }
@@ -113,6 +114,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
                 value={queryParamY}
                 onChange={handleQueryParamYOnChange}
             />
+            <br />
             <Dropdown
                 label="X-Axis Query "
                 options={playerQueryOptions}

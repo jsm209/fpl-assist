@@ -5,8 +5,8 @@ import Layout from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 
 // Data
-import { getGeneralInfo, getAllPlayerQueryOptions, getAllTeamCodes } from '../lib/FPLDataService';
-import { order, getTeamNameFromTeamCode, getFirstOccurenceOfPropertyValueFromArray } from "../lib/FPLDataProcessor";
+import { getGeneralInfo, getAllPlayerQueryOptions } from '../lib/FPLDataService';
+import { order, getTeamNameFromTeamCode, getFirstOccurenceOfPropertyValueFromArray, getPlayerDataMapping } from "../lib/FPLDataProcessor";
 
 // Components
 import Dropdown from '../components/dropdown';
@@ -78,7 +78,7 @@ export default function PlayerQueryPage({ players, teams }) {
                             <br />4 = Forwards 
                         </li>
                     </ul>
-
+                    
                     <Dropdown 
                         label="Query By: "
                         options={playerQueryOptions}
@@ -86,34 +86,38 @@ export default function PlayerQueryPage({ players, teams }) {
                         onChange={handleQueryParamOnChange}
                     />
                     <br />
-                    <p>Included team codes: {includedTeams.map((teamCode) => (
-                        getTeamNameFromTeamCode(teams, teamCode) + ", "
-                    ))}</p>
-                    <TeamSelector 
-                        teams={teams}
-                        onChange={handleIncludedTeamsOnChange}
-                    />
 
-                    <table>
-                        <tr>
-                            <th>Name</th>
-                            <th>Team</th>
-                            <th>{queryParamLabel}</th>
-                        </tr>
-                        {sortedPlayers.map(player =>{
-                            if (includedTeams.includes(String(player.team_code))) {
-                                return (
-                                    <tr>
-                                        <td>{player.first_name} {player.second_name}</td>
-                                        <td>{getTeamNameFromTeamCode(teams, player.team_code)}</td>
-                                        <td>{player[queryParam]}</td>
-                                    </tr>
-                                
-                                )
-                            }
-                        })
-                    }
-                    </table>
+                    <section className={utilStyles.paddingSection}>
+                        <p>Included Teams:</p>
+                        <TeamSelector 
+                            teams={teams}
+                            onChange={handleIncludedTeamsOnChange}
+                        />
+                    </section>
+
+                    <section className={utilStyles.paddingSection}>
+                        <table className={utilStyles.playerQueryTable}>
+                            <tr className={utilStyles.paddingRight}>
+                                <th>Name</th>
+                                <th>Team</th>
+                                <th>{queryParamLabel}</th>
+                            </tr>
+                            {sortedPlayers.map(player =>{
+                                if (includedTeams.includes(String(player.team_code))) {
+                                    return (
+                                        <tr className={utilStyles.paddingRight}>
+                                            <td>{player.first_name} {player.second_name}</td>
+                                            <td>{getTeamNameFromTeamCode(teams, player.team_code)}</td>
+                                            <td>{getPlayerDataMapping(player, queryParam)}</td>
+                                        </tr>
+                                    
+                                    )
+                                }
+                            })
+                        }
+                        </table>
+                    </section>
+
                 </div>
             </article>
         </Layout>
