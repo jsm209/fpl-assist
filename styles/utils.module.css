@@ -64,8 +64,21 @@
     flex-wrap: wrap;
   }
 
+  .centeredFlexbox {
+    display: flex;
+    justify-content: center;
+  }
+
   .paddingRight {
     padding-right: 10px;
+  }
+
+  .marginLeft {
+    margin-left: 10px;
+  }
+
+  .marginRight {
+    margin-right: 10px;
   }
 
   .playerQueryTable {

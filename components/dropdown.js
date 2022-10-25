@@ -1,10 +1,12 @@
+import utilStyles from '../styles/utils.module.css';
+
 export default function Dropdown({ label, value, options, onChange }) {
     return (
-        <label>
+        <label className={utilStyles.marginRight}>
             {label}
-            <select value={value} onChange={onChange}>
+            <select value={value} onChange={onChange} className={utilStyles.marginLeft}>
                 {options.map((option) => (
-                    <option value={option.value}>{option.label}</option>
+                    <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
             </select>
         </label>

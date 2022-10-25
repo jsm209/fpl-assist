@@ -11,6 +11,7 @@ import { getTeamNameFromTeamCode, prepareScatterplotPlayerData, getPositionNameF
 // Components
 import Dropdown from '../components/dropdown';
 import { Scatter } from 'react-chartjs-2';
+import TeamSelector from '../components/TeamSelector';
 
 export async function getStaticProps() {
     const data = await getGeneralInfo()
@@ -28,17 +29,58 @@ export async function getStaticProps() {
 export default function PlayerScatterplotPage({ players, teams }) {
 
     const playerQueryOptions = getAllPlayerQueryOptions()
-    
-    const [queryParamX, setQueryParamX] = useState('points_per_game')
-    const [queryParamY, setQueryParamY] = useState('points_per_game')
-
     const [scatterplotDataset, setScatterplotDataset] = useState([])
 
-    const data = {
+    // Query Param X
+    const [queryParamX, setQueryParamX] = useState('points_per_game')
+    const [minimumQueryParamX, setMinimumQueryParamX] = useState()
+    const [maximumQueryParamX, setMaximumQueryParamX] = useState()
+
+    // Query Param Y
+    const [queryParamY, setQueryParamY] = useState('points_per_game')
+    const [maximumQueryParamY, setMaximumQueryParamY] = useState()
+    const [minimumQueryParamY, setMinimumQueryParamY] = useState()
+
+    const handleQueryParamXOnChange = (event) => {
+        setQueryParamX(event.target.value)
+        setScatterplotDataset(prepareScatterplotPlayerData(players, event.target.value, queryParamY))
+    }
+
+    const handleQueryParamYOnChange = (event) => {
+        setQueryParamY(event.target.value)
+        setScatterplotDataset(prepareScatterplotPlayerData(players, queryParamX, event.target.value))
+    }
+
+    // Repopulates the data with whatever filters and query parameters set.
+    const refreshData = () => {
+        setScatterplotDataset(prepareScatterplotPlayerData(
+            players, 
+            queryParamX, 
+            queryParamY, 
+            maximumQueryParamX, 
+            minimumQueryParamX, 
+            maximumQueryParamY, 
+            minimumQueryParamY
+            ))
+    }
+
+    // Given a max/min X and Y value, will filter the data.
+    const handleMinMaxFilterchanges = (maxX, minX, maxY, minY) => {
+        setScatterplotDataset(prepareScatterplotPlayerData(
+            players, 
+            queryParamX, 
+            queryParamY, 
+            maxX,
+            minX,
+            maxY,
+            minY))
+    }
+
+        const data = {
         labels: ['Scatter'],
         datasets: [
             {
-                label: 'My First dataset',
+                label: 'All Premier League Players',
                 fill: false,
                 backgroundColor: 'rgba(75,192,192,0.4)',
                 pointBorderColor: 'rgba(75,192,192,1)',
@@ -95,43 +137,88 @@ export default function PlayerScatterplotPage({ players, teams }) {
           },
     }
 
-    const handleQueryParamXOnChange = (event) => {
-        setQueryParamX(event.target.value)
-        console.log(players)
-        setScatterplotDataset(prepareScatterplotPlayerData(players, event.target.value, queryParamY))
-    }
-
-    const handleQueryParamYOnChange = (event) => {
-        setQueryParamY(event.target.value)
-        setScatterplotDataset(prepareScatterplotPlayerData(players, queryParamX, event.target.value))
-    }
-
     return (
         <Layout>
-            <Dropdown
-                label="Y-Axis Query "
-                options={playerQueryOptions}
-                value={queryParamY}
-                onChange={handleQueryParamYOnChange}
-            />
-            <br />
-            <Dropdown
-                label="X-Axis Query "
-                options={playerQueryOptions}
-                value={queryParamX}
-                onChange={handleQueryParamXOnChange}
-            />
+            <section className={utilStyles.paddingSection}>
+                <h1 className={utilStyles.headingXl}>Player Scatterplot</h1>
+                <p className={utilStyles.lightText}>Select a characteristic to query players by selecting from the dropdown a choice for both the Y and X axis. Optional minimums and maximums can be set for each axis.</p>
+
+                <Dropdown
+                    label="Y-Axis Query "
+                    options={playerQueryOptions}
+                    value={queryParamY}
+                    onChange={handleQueryParamYOnChange}
+                />
+                <br />
+                <label>
+                    Minimum {queryParamY}: 
+                    <input type="text" value={minimumQueryParamY} onChange={(event) => {
+                        setMinimumQueryParamY(event.target.value)
+                        handleMinMaxFilterchanges(maximumQueryParamX, minimumQueryParamX, maximumQueryParamY, event.target.value)
+                    }} />
+                </label>
+                <br />
+                <label>
+                    Maximum {queryParamY}: 
+                    <input type="text" value={maximumQueryParamY} onChange={(event) => {
+                        setMaximumQueryParamY(event.target.value)
+                        console.log("YMax is a number: " + !isNaN(event.target.value))
+                        console.log("YMax is null: " + event.target.value == null ? "Yes" : "No")
+                        handleMinMaxFilterchanges(maximumQueryParamX, minimumQueryParamX, event.target.value, minimumQueryParamY)
+                    }} />
+                </label>
+            </section>
+
+            <section className={utilStyles.paddingSection}>
+                <Dropdown
+                    label="X-Axis Query "
+                    options={playerQueryOptions}
+                    value={queryParamX}
+                    onChange={handleQueryParamXOnChange}
+                />
+                <br />
+                 <label>
+                    Minimum {queryParamX}: 
+                    <input type="text" value={minimumQueryParamX} onChange={(event) => {
+                        setMinimumQueryParamX(event.target.value)
+                        handleMinMaxFilterchanges(maximumQueryParamX, minimumQueryParamX, maximumQueryParamY, minimumQueryParamY)
+                    }} />
+                </label>
+                <br />
+                <label>
+                    Maximum {queryParamX}: 
+                    <input type="text" value={maximumQueryParamX} onChange={(event) => {
+                        setMaximumQueryParamX(event.target.value)
+                        handleMinMaxFilterchanges(maximumQueryParamX, minimumQueryParamX, maximumQueryParamY, minimumQueryParamY)
+                    }} />
+                </label> 
+            </section>
+
+            <section>
+                {/* <p>Filters</p>
+                <label>
+                    Maximum Price: 
+                    <input type="text" value={maximumQueryParamX} onChange={(event) => { setMaximumQueryParamX(event.target.value) }} />
+                </label>
+
+                <Dropdown
+                    label="Position "
+                    options={playerQueryOptions}
+                    value={queryParamX}
+                    onChange={handleQueryParamXOnChange}
+                /> */}
+            </section>
 
             <Scatter
                 data={data}
                 options={options}
                 width={400}
                 height={400}
-            />
+            /> 
 
             <p className={utilStyles.lightText}>Notes:</p>
             <ul>
-                <li className={utilStyles.listItem}>Selecting "Position" as a query will label the data as "element-type" where 
+                <li className={utilStyles.listItem}>"Position" as a query will label the data and filters as "element-type" where 
                     <br />1 = Goalkeepers 
                     <br />2 = Defenders 
                     <br />3 = Midfielders 

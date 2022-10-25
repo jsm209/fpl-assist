@@ -17,10 +17,7 @@ export default function AboutPage({ articleData }) {
     return (
         <Layout>
             <article>
-                <h1 className={utilStyles.headingXl}>Home</h1>
-                <div className={utilStyles.lightText}>
-                <p>What is FPL Suggestions?</p>
-                </div>
+                <h1 className={utilStyles.headingXl}>About</h1>
                 <div dangerouslySetInnerHTML={{ __html: articleData.contentHtml }} />
             </article>
         </Layout>

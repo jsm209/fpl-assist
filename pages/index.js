@@ -35,8 +35,8 @@ export default function Home() {
             <a>Player Scatterplot</a>
           </Link>
           <br />
-          <Link href={'/about'}>
-            <a>Team Query</a>
+          <Link href={'/team-compare'}>
+            <a>Team Comparer</a>
           </Link>
           <br />
           <Link href={'/about'}>

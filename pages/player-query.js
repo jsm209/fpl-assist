@@ -10,7 +10,7 @@ import { order, getTeamNameFromTeamCode, getFirstOccurenceOfPropertyValueFromArr
 
 // Components
 import Dropdown from '../components/dropdown';
-import TeamSelector from '../components/teamSelector';
+import TeamSelector from '../components/TeamSelector';
 
 
 export async function getStaticProps() {
@@ -19,7 +19,6 @@ export async function getStaticProps() {
     const teams = data.teams
     //const playersTransfersIn = order(players, "transfers_in")
 
-    console.log(teams)
     return {
         props: {
             players: players,
@@ -66,18 +65,8 @@ export default function PlayerQueryPage({ players, teams }) {
         <Layout>
             <article>
                 <h1 className={utilStyles.headingXl}>Player Query</h1>
-                <div className={utilStyles.lightText}>
-                    <p>This is a tool to query all the FPL players based on various statistics. This tool is helpful for filtering players based on your current needs or for exploring the performance of different players.</p>
-                    
-                    <p className={utilStyles.lightText}>Notes:</p>
-                    <ul>
-                        <li className={utilStyles.listItem}>Selecting "Position" as a query will label the data as "element-type" where 
-                            <br />1 = Goalkeepers 
-                            <br />2 = Defenders 
-                            <br />3 = Midfielders 
-                            <br />4 = Forwards 
-                        </li>
-                    </ul>
+                    <p className={utilStyles.lightText}>This is a tool to query all the FPL players based on various statistics. This tool is helpful for filtering players based on your current needs or for exploring the performance of different players.</p>
+
                     
                     <Dropdown 
                         label="Query By: "
@@ -117,8 +106,6 @@ export default function PlayerQueryPage({ players, teams }) {
                         }
                         </table>
                     </section>
-
-                </div>
             </article>
         </Layout>
     )
