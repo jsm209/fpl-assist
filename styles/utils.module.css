@@ -24,6 +24,12 @@
     font-size: 1.2rem;
     line-height: 1.5;
   }
+
+  .headingSm {
+    font-size: 1.0rem;
+    font-weight: 800;
+    line-height: 1.0;
+  }
   
   .borderCircle {
     border-radius: 9999px;
@@ -69,6 +75,20 @@
     justify-content: center;
   }
 
+  .centeredFlexboxTeamCompareColumn {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 70%
+  }
+
+  .centeredFlexboxTeamComparePage {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
   .paddingRight {
     padding-right: 10px;
   }
@@ -84,4 +104,11 @@
   .playerQueryTable {
     border-spacing: 10px;
     border-collapse: separate;
+  }
+
+  .fixtureCell {
+    padding: 5px;
+    color: white;
+    width: 55px;
+    text-align: center;
   }

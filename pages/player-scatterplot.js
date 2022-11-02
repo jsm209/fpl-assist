@@ -6,7 +6,7 @@ import utilStyles from '../styles/utils.module.css';
 
 // Data
 import { getGeneralInfo, getAllPlayerQueryOptions, } from '../lib/FPLDataService';
-import { getTeamNameFromTeamCode, prepareScatterplotPlayerData, getPositionNameFromElementType } from "../lib/FPLDataProcessor";
+import { getTeamNameFromTeamID, getTeamNameFromTeamCode, prepareScatterplotPlayerData, getPositionNameFromElementType } from "../lib/FPLDataProcessor";
 
 // Components
 import Dropdown from '../components/dropdown';

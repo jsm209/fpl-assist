@@ -10,7 +10,7 @@ let data = [
 ]
 
 */
-export default function FPLBarChart({ datasetTeam1, datasetTeam2 }) {
+export default function FPLBarChart({ datasetTeam1, datasetTeam2, team1Color, team2Color }) {
 
     const options = {
         responsive: true,
@@ -34,12 +34,12 @@ export default function FPLBarChart({ datasetTeam1, datasetTeam2 }) {
           {
             label: datasetTeam1.label,
             data: datasetTeam1.data,
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            backgroundColor: team1Color,
           },
           {
             label: datasetTeam2.label,
             data: datasetTeam2.data,
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            backgroundColor: team2Color,
           },
         ],
       };

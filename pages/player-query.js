@@ -5,7 +5,7 @@ import Layout from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 
 // Data
-import { getGeneralInfo, getAllPlayerQueryOptions } from '../lib/FPLDataService';
+import { getGeneralInfo, getAllPlayerQueryOptions, useGeneralInfo } from '../lib/FPLDataService';
 import { order, getTeamNameFromTeamCode, getFirstOccurenceOfPropertyValueFromArray, getPlayerDataMapping } from "../lib/FPLDataProcessor";
 
 // Components
@@ -15,6 +15,7 @@ import TeamSelector from '../components/TeamSelector';
 
 export async function getStaticProps() {
     const data = await getGeneralInfo()
+    // const { data, isLoading, isError } = useGeneralInfo()
     const players = data.elements
     const teams = data.teams
     //const playersTransfersIn = order(players, "transfers_in")
@@ -34,7 +35,11 @@ const filterParams = ["transfers_in"]
 export default function PlayerQueryPage({ players, teams }) {
 
     //let queryParam = "points_per_game"
-    
+    // const { data, isLoading, isError } = useGeneralInfo()
+
+    // if (isError) return <div>Failed to load</div>
+    // if (isLoading) return <div>Loading...</div>
+
    
     const playerQueryOptions = getAllPlayerQueryOptions()
 
