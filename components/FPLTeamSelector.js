@@ -1,7 +1,7 @@
 import { getAllTeams } from "../lib/FPLDataService";
 import utilStyles from '../styles/utils.module.css';
 
-export default function TeamSelector({teams, onChange }) {
+export default function FPLTeamSelector({teams, onChange }) {
 
     return (
         <div className={utilStyles.teamSelectorFlexbox}>

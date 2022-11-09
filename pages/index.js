@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Layout from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 import layoutStyles from '../styles/layout.module.css'
-import Link from 'next/Link';
+import Link from 'next/link';
 import { getArticleData } from '../lib/articles';
 
 export async function getStaticProps() {

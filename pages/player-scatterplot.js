@@ -6,12 +6,11 @@ import utilStyles from '../styles/utils.module.css';
 
 // Data
 import { getGeneralInfo, getAllPlayerQueryOptions, } from '../lib/FPLDataService';
-import { getTeamNameFromTeamID, getTeamNameFromTeamCode, prepareScatterplotPlayerData, getPositionNameFromElementType } from "../lib/FPLDataProcessor";
+import { getTeamNameFromTeamCode, prepareScatterplotPlayerData, getPositionNameFromElementType } from "../lib/FPLDataProcessor";
 
 // Components
 import Dropdown from '../components/dropdown';
 import { Scatter } from 'react-chartjs-2';
-import TeamSelector from '../components/TeamSelector';
 
 export async function getStaticProps() {
     const data = await getGeneralInfo()

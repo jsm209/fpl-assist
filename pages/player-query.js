@@ -5,17 +5,13 @@ import Layout from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 
 // Data
-import { getGeneralInfo, getAllPlayerQueryOptions, useGeneralInfo } from '../lib/FPLDataService';
+import { getGeneralInfo, getAllPlayerQueryOptions } from '../lib/FPLDataService';
 import { order, getTeamNameFromTeamCode, getFirstOccurenceOfPropertyValueFromArray, getPlayerDataMapping } from "../lib/FPLDataProcessor";
 
 // Components
 import Dropdown from '../components/dropdown';
-import TeamSelector from '../components/TeamSelector';
+import FPLTeamSelector from '../components/FPLTeamSelector';
 import FPLPlayerSummaryModal from '../components/FPLPlayerSummaryModal';
-
-// Reactjs-popup
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
 
 
 export async function getStaticProps() {
@@ -93,7 +89,7 @@ export default function PlayerQueryPage({ players, teams }) {
 
                 <section className={utilStyles.paddingSection}>
                     <p>Included Teams:</p>
-                    <TeamSelector
+                    <FPLTeamSelector
                         teams={teams}
                         onChange={handleIncludedTeamsOnChange}
                     />
