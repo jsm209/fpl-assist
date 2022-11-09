@@ -24,6 +24,15 @@ export default function Layout({ children, home }) {
               />
             </a>
           </Link>
+          <div className={utilStyles.pageHeadingSection}>
+                <div className={styles.container}>
+                  <h2 className={utilStyles.headingPage}>
+                    <Link href="/">
+                      <a className={utilStyles.colorInherit}>{name}</a>
+                    </Link>
+                  </h2>
+                </div>
+              </div>
         </div>
       }
 
@@ -46,15 +55,7 @@ export default function Layout({ children, home }) {
         <header className={styles.header}>
           {home ? <></> : (
             <>
-              <div className={utilStyles.pageHeadingSection}>
-                <div className={styles.container}>
-                  <h2 className={utilStyles.headingPage}>
-                    <Link href="/">
-                      <a className={utilStyles.colorInherit}>{name}</a>
-                    </Link>
-                  </h2>
-                </div>
-              </div>
+              
             </>
           )}
         </header>
