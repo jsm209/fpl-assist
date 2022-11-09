@@ -54,40 +54,40 @@ export default function PlayerScatterplotPage({ players, teams }) {
     // Repopulates the data with whatever filters and query parameters set.
     const refreshData = () => {
         setScatterplotDataset(prepareScatterplotPlayerData(
-            players, 
-            queryParamX, 
-            queryParamY, 
-            maximumQueryParamX, 
-            minimumQueryParamX, 
-            maximumQueryParamY, 
+            players,
+            queryParamX,
+            queryParamY,
+            maximumQueryParamX,
+            minimumQueryParamX,
+            maximumQueryParamY,
             minimumQueryParamY
-            ))
+        ))
     }
 
     // Given a max/min X and Y value, will filter the data.
     const handleMinMaxFilterchanges = (maxX, minX, maxY, minY) => {
         setScatterplotDataset(prepareScatterplotPlayerData(
-            players, 
-            queryParamX, 
-            queryParamY, 
+            players,
+            queryParamX,
+            queryParamY,
             maxX,
             minX,
             maxY,
             minY))
     }
 
-        const data = {
+    const data = {
         labels: ['Scatter'],
         datasets: [
             {
                 label: 'All Premier League Players',
                 fill: false,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                pointBorderColor: 'rgba(75,192,192,1)',
-                pointBackgroundColor: '#fff',
+                backgroundColor: '#38003c',
+                pointBorderColor: '#38003c',
+                pointBackgroundColor: '#38003c',
                 pointBorderWidth: 5,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                pointHoverBackgroundColor: '#00ff85',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
@@ -104,7 +104,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
                     title: (context) => {
                         let label = "";
                         for (let index in context) {
-                            let teamName =  getTeamNameFromTeamCode(teams, context[index].raw.playerData.team_code)
+                            let teamName = getTeamNameFromTeamCode(teams, context[index].raw.playerData.team_code)
                             let position = getPositionNameFromElementType(context[index].raw.playerData.element_type)
                             label = label + context[index].raw.name + " (" + teamName + ", " + position + ")" + "\n"
                         }
@@ -121,27 +121,30 @@ export default function PlayerScatterplotPage({ players, teams }) {
         },
         scales: {
             y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: queryParamY
-              }
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: queryParamY
+                }
             },
             x: {
                 beginAtZero: true,
                 title: {
-                  display: true,
-                  text: queryParamX
+                    display: true,
+                    text: queryParamX
                 }
-              },
-          },
+            },
+        },
     }
 
     return (
         <Layout>
             <section className={utilStyles.paddingSection}>
                 <h1 className={utilStyles.headingXl}>Player Scatterplot</h1>
-                <p className={utilStyles.lightText}>Select a characteristic to query players by selecting from the dropdown a choice for both the Y and X axis. Optional minimums and maximums can be set for each axis.</p>
+                <p>
+                    Select a characteristic to query players by selecting from the dropdown a choice for both the Y and X axis.
+                    Hover over a data point to see the player's name, team, position, and exact axis values.
+                </p>
 
                 <Dropdown
                     label="Y-Axis Query "
@@ -150,7 +153,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
                     onChange={handleQueryParamYOnChange}
                 />
                 <br />
-                <label>
+                {/* <label>
                     Minimum {queryParamY}: 
                     <input type="text" value={minimumQueryParamY} onChange={(event) => {
                         setMinimumQueryParamY(event.target.value)
@@ -166,7 +169,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
                         console.log("YMax is null: " + event.target.value == null ? "Yes" : "No")
                         handleMinMaxFilterchanges(maximumQueryParamX, minimumQueryParamX, event.target.value, minimumQueryParamY)
                     }} />
-                </label>
+                </label> */}
             </section>
 
             <section className={utilStyles.paddingSection}>
@@ -177,7 +180,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
                     onChange={handleQueryParamXOnChange}
                 />
                 <br />
-                 <label>
+                {/* <label>
                     Minimum {queryParamX}: 
                     <input type="text" value={minimumQueryParamX} onChange={(event) => {
                         setMinimumQueryParamX(event.target.value)
@@ -191,7 +194,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
                         setMaximumQueryParamX(event.target.value)
                         handleMinMaxFilterchanges(maximumQueryParamX, minimumQueryParamX, maximumQueryParamY, minimumQueryParamY)
                     }} />
-                </label> 
+                </label>  */}
             </section>
 
             <section>
@@ -214,15 +217,15 @@ export default function PlayerScatterplotPage({ players, teams }) {
                 options={options}
                 width={400}
                 height={400}
-            /> 
+            />
 
             <p className={utilStyles.lightText}>Notes:</p>
             <ul>
-                <li className={utilStyles.listItem}>"Position" as a query will label the data and filters as "element-type" where 
-                    <br />1 = Goalkeepers 
-                    <br />2 = Defenders 
-                    <br />3 = Midfielders 
-                    <br />4 = Forwards 
+                <li className={utilStyles.listItem}>"Position" as a query will label the data and filters as "element-type" where
+                    <br />1 = Goalkeepers
+                    <br />2 = Defenders
+                    <br />3 = Midfielders
+                    <br />4 = Forwards
                 </li>
             </ul>
         </Layout>

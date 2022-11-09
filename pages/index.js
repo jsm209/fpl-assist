@@ -1,59 +1,75 @@
 import Head from 'next/head'
 import Layout from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
+import layoutStyles from '../styles/layout.module.css'
 import Link from 'next/Link';
+import { getArticleData } from '../lib/articles';
 
-export default function Home() {
+export async function getStaticProps() {
+  const articleData = await getArticleData("about")
+  return {
+    props: {
+      articleData,
+    }
+  }
+}
+
+export default function Home({ articleData }) {
   return (
-    <Layout home>
-      <Head>
-        <title>FPL Suggestions</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <section className={utilStyles.paddingSection}>
-        <h1 className={utilStyles.headingXl}>Home</h1>
-        <div className={utilStyles.lightText}>
-          <Link href={'/about'}>
-            <a>What is this project? Who is it for?</a>
-          </Link>
-          <br />
-          <Link href={'/about'}>
-            <a>How do I use FPL Suggestions?</a>
-          </Link>
+    <div>
+      <div className={utilStyles.landingHeadingSection}>
+        <div className={layoutStyles.container}>
+          <h1 className={utilStyles.headingLanding}>FPL Assist</h1>
+          <p className={utilStyles.subheadingLanding}>Fantasy Premier League Data Visualization Tools</p>
         </div>
-      </section>
 
-      <section className={utilStyles.paddingSection}>
-        <h1 className={utilStyles.headingXl}>Available Tools</h1>
-        <div className={utilStyles.lightText}>
-          <Link href={'/player-query'}>
-            <a>Player Query</a>
-          </Link>
-          <br />
-          <Link href={'/player-scatterplot'}>
-            <a>Player Scatterplot</a>
-          </Link>
-          <br />
-          <Link href={'/team-compare'}>
-            <a>Team Comparer</a>
-          </Link>
-          <br />
-          <Link href={'/about'}>
-            <a>Fixture Viewer</a>
-            {/* <p>Show a list of fixtures, clicking a fixture loads the strength into two bar graphs, 
-              lists out the team's players ordered by cost, showing their total points scored, position, and injuries</p> */}
-          </Link>
-          <br />
-          <Link href={'/about'}>
-            <a>Player Suggestor (Under Construction)</a>
-          </Link>
-          <br />
-          <Link href={'/about'}>
-            <a>Detailed Player Performance Over Time (Under Construction)</a>
-          </Link>
-        </div>
-      </section>
-    </Layout>
+      </div>
+      <Layout home>
+        <Head>
+          <title>FPL Suggestions</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <section className={utilStyles.paddingSection}>
+          <h1 className={utilStyles.headingXl}>Home</h1>
+          <div dangerouslySetInnerHTML={{ __html: articleData.contentHtml }} />
+          <p>For more information about the legitimacy and reliability of the data and future tools, <Link href={'/faq'}>click here to view the FAQ</Link>.</p>
+          <p className={utilStyles.hint}>Unsure of what to do? Try going to the "scatterplot" tool and plot "total points" versus "price value" to see the most cost effective players.</p>
+        
+        </section>
+
+        <section className={utilStyles.paddingSection}>
+          <h1 className={utilStyles.headingXl}>Available Tools</h1>
+          <div className={utilStyles.centeredFlexboxColumn}>
+            <Link href={'/player-query'}>
+              <a>
+                <div className={utilStyles.toolButton + " " + utilStyles.greenGradient}>
+                  <p className={utilStyles.toolButtonLabel}>Player Query</p>
+                </div>
+              </a>
+            </Link>
+            <br />
+            <Link href={'/player-scatterplot'}>
+              <a>
+                <div className={utilStyles.toolButton + " " + utilStyles.greenGradient}>
+                  <p className={utilStyles.toolButtonLabel}>Scatterplot</p>
+                </div>
+              </a>
+            </Link>
+            <br />
+            <Link href={'/team-compare'}>
+              <a>
+                <div className={utilStyles.toolButton + " " + utilStyles.greenGradient}>
+                  <p className={utilStyles.toolButtonLabel}>Fixtures</p>
+                </div>
+              </a>
+            </Link>
+            <br />
+            <br />
+          </div>
+        </section>
+      </Layout>
+    </div>
+
   )
 }

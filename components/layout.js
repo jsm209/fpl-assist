@@ -4,11 +4,29 @@ import styles from '../styles/layout.module.css';
 import utilStyles from '../styles/utils.module.css';
 import Link from 'next/link';
 
-const name = 'FPL Suggestions';
-const siteTitle = "FPL Suggestions"
+const name = 'FPL Assist';
+const siteTitle = "FPL Assist"
 
 export default function Layout({ children, home }) {
-    return (
+  return (
+    <div>
+      {home ? <></> :
+        <div style={{ backgroundColor: "black", padding: "10px" }}>
+          <Link href="/">
+            <a>
+              <Image
+                priority
+                src="/images/profile.png"
+                className={utilStyles.borderCircle}
+                height={108}
+                width={108}
+                alt=""
+              />
+            </a>
+          </Link>
+        </div>
+      }
+
       <div className={styles.container}>
         <Head>
           <link rel="icon" href="/favicon.ico" />
@@ -26,48 +44,60 @@ export default function Layout({ children, home }) {
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <header className={styles.header}>
-          {home ? (
+          {home ? <></> : (
             <>
-              <Image
-                priority
-                src="/images/profile.png"
-                className={utilStyles.borderCircle}
-                height={144}
-                width={144}
-                alt=""
-              />
-              <h1 className={utilStyles.heading2Xl}>{name}</h1>
-            </>
-          ) : (
-            <>
-              <Link href="/">
-                <a>
-                  <Image
-                    priority
-                    src="/images/profile.png"
-                    className={utilStyles.borderCircle}
-                    height={108}
-                    width={108}
-                    alt=""
-                  />
-                </a>
-              </Link>
-              <h2 className={utilStyles.headingLg}>
-                <Link href="/">
-                  <a className={utilStyles.colorInherit}>{name}</a>
-                </Link>
-              </h2>
+              <div className={utilStyles.pageHeadingSection}>
+                <div className={styles.container}>
+                  <h2 className={utilStyles.headingPage}>
+                    <Link href="/">
+                      <a className={utilStyles.colorInherit}>{name}</a>
+                    </Link>
+                  </h2>
+                </div>
+              </div>
             </>
           )}
         </header>
         <main>{children}</main>
-        {!home && (
-          <div className={styles.backToHome}>
-            <Link href="/">
-              <a>← Back to home</a>
-            </Link>
-          </div>
-        )}
       </div>
-    );
-  }
+      <section className={utilStyles.footerSection}>
+        <div className={styles.container}>
+          <div style={{display: "flex"}}>
+            <div style={{paddingRight: "60px"}}>
+              <p className={utilStyles.headingSm}>FPL Assist</p>
+              <div>
+                <Link href={'/'}>
+                  <a className={utilStyles.footerLinkStyle}>Home</a>
+                </Link>
+              </div>
+              <div>
+                <Link href={'/faq'}>
+                  <a className={utilStyles.footerLinkStyle}>FAQ</a>
+                </Link>
+              </div>
+            </div>
+            <div>
+              <p className={utilStyles.headingSm}>Tools</p>
+              <div>
+                <Link href={'/player-query'}>
+                  <a className={utilStyles.footerLinkStyle}>Player Query</a>
+                </Link>
+              </div>
+              <div>
+                <Link href={'/player-scatterplot'}>
+                  <a className={utilStyles.footerLinkStyle}>Scatterplot</a>
+                </Link>
+              </div>
+              <div>
+                <Link href={'/team-compare'}>
+                  <a className={utilStyles.footerLinkStyle}>Fixtures</a>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  );
+}

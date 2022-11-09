@@ -11,6 +11,11 @@ import { order, getTeamNameFromTeamCode, getFirstOccurenceOfPropertyValueFromArr
 // Components
 import Dropdown from '../components/dropdown';
 import TeamSelector from '../components/TeamSelector';
+import FPLPlayerSummaryModal from '../components/FPLPlayerSummaryModal';
+
+// Reactjs-popup
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 
 
 export async function getStaticProps() {
@@ -24,7 +29,7 @@ export async function getStaticProps() {
         props: {
             players: players,
             teams: teams
-     //       playersTransfersIn: [playersTransfersIn],
+            //       playersTransfersIn: [playersTransfersIn],
             //getHighestTransferredInPlayers
         }
     }
@@ -40,10 +45,13 @@ export default function PlayerQueryPage({ players, teams }) {
     // if (isError) return <div>Failed to load</div>
     // if (isLoading) return <div>Loading...</div>
 
-   
+
     const playerQueryOptions = getAllPlayerQueryOptions()
 
     const [queryParamLabel, setQueryParamLabel] = useState('Points Per Game')
+
+    const [playerModalInfo, setPlayerModalInfo] = useState({})
+    const [showPlayerModal, setShowPlayerModal] = useState(false)
 
     const [queryParam, setQueryParam] = useState('points_per_game')
     const handleQueryParamOnChange = (event) => {
@@ -56,9 +64,9 @@ export default function PlayerQueryPage({ players, teams }) {
     const handleIncludedTeamsOnChange = (event) => {
         var updatedList = [...includedTeams];
         if (event.target.checked) {
-          updatedList = [...includedTeams, event.target.value];
+            updatedList = [...includedTeams, event.target.value];
         } else {
-          updatedList.splice(updatedList.indexOf(event.target.value), 1);
+            updatedList.splice(updatedList.indexOf(event.target.value), 1);
         }
         setIncludedTeams(updatedList);
     }
@@ -70,48 +78,64 @@ export default function PlayerQueryPage({ players, teams }) {
         <Layout>
             <article>
                 <h1 className={utilStyles.headingXl}>Player Query</h1>
-                    <p className={utilStyles.lightText}>This is a tool to query all the FPL players based on various statistics. This tool is helpful for filtering players based on your current needs or for exploring the performance of different players.</p>
+                <p>
+                    Select a quality from the dropdown to sort players by, and select which teams are included from the checkboxes below. Click on a table row to see a player's full FPL stats.
+                </p>
 
-                    
-                    <Dropdown 
-                        label="Query By: "
-                        options={playerQueryOptions}
-                        value={queryParam}
-                        onChange={handleQueryParamOnChange}
+
+                <Dropdown
+                    label="Sort By: "
+                    options={playerQueryOptions}
+                    value={queryParam}
+                    onChange={handleQueryParamOnChange}
+                />
+                <br />
+
+                <section className={utilStyles.paddingSection}>
+                    <p>Included Teams:</p>
+                    <TeamSelector
+                        teams={teams}
+                        onChange={handleIncludedTeamsOnChange}
                     />
-                    <br />
+                </section>
 
-                    <section className={utilStyles.paddingSection}>
-                        <p>Included Teams:</p>
-                        <TeamSelector 
-                            teams={teams}
-                            onChange={handleIncludedTeamsOnChange}
-                        />
-                    </section>
-
-                    <section className={utilStyles.paddingSection}>
-                        <table className={utilStyles.playerQueryTable}>
+                <section className={utilStyles.paddingSection}>
+                    <table className={utilStyles.playerTable}>
+                        <thead>
                             <tr className={utilStyles.paddingRight}>
                                 <th>Name</th>
                                 <th>Team</th>
                                 <th>{queryParamLabel}</th>
                             </tr>
-                            {sortedPlayers.map(player =>{
-                                if (includedTeams.includes(String(player.team_code))) {
-                                    return (
-                                        <tr className={utilStyles.paddingRight}>
+                        </thead>
+
+                        {sortedPlayers.map(player => {
+                            if (includedTeams.includes(String(player.team_code))) {
+                                return (
+                                    <tbody>
+                                        <tr className={utilStyles.paddingRight} onClick={() => {
+                                            setShowPlayerModal(true)
+                                            setPlayerModalInfo({ ...player, team_name: getTeamNameFromTeamCode(teams, player.team_code) })
+                                        }}>
                                             <td>{player.first_name} {player.second_name}</td>
                                             <td>{getTeamNameFromTeamCode(teams, player.team_code)}</td>
                                             <td>{getPlayerDataMapping(player, queryParam)}</td>
                                         </tr>
-                                    
-                                    )
-                                }
-                            })
+                                    </tbody>
+                                )
+                            }
+                        })
                         }
-                        </table>
-                    </section>
+                    </table>
+                </section>
             </article>
+            <FPLPlayerSummaryModal
+                player={playerModalInfo}
+                open={showPlayerModal}
+                callback={() => {
+                    setShowPlayerModal(false)
+                }}
+            />
         </Layout>
     )
 }

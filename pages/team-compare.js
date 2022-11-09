@@ -7,7 +7,11 @@ import { FixtureDifficultyColorConstants } from "../constants"
 
 // Data
 import { getGeneralInfo, getFixtures, } from '../lib/FPLDataService';
-import { getTeamNameFromTeamID, getTeamIDFromTeamName, getFirstOccurenceOfPropertyValueFromArray, getTeamChallengeLevelColor } from "../lib/FPLDataProcessor";
+import {
+    getTeamNameFromTeamID, getTeamIDFromTeamName, getFirstOccurenceOfPropertyValueFromArray,
+    getTeamChallengeLevelColor, getAllAtRiskPlayersForTeamCode, getTeamCodeFromTeamID,
+    getCurrentGameWeek
+} from "../lib/FPLDataProcessor";
 
 // Components
 import Dropdown from '../components/dropdown';
@@ -16,20 +20,19 @@ import FPLFixtureCell from '../components/FPLFixtureCell';
 
 export async function getStaticProps() {
     const data = await getGeneralInfo()
+    const players = data.elements
     const teams = data.teams
-    const fixtures = await getFixtures(15)
-    console.log(teams)
-    console.log(fixtures)
-
+    const fixtures = await getFixtures(getCurrentGameWeek())
     return {
         props: {
+            players: players,
             teams: teams,
             fixtures: fixtures
         }
     }
 }
 
-export default function PlayerScatterplotPage({ teams, fixtures }) {
+export default function PlayerScatterplotPage({ players, teams, fixtures }) {
 
     const [team1Name, setTeam1Name] = useState()
     const [team2Name, setTeam2Name] = useState()
@@ -40,6 +43,9 @@ export default function PlayerScatterplotPage({ teams, fixtures }) {
     const [datasetTeam1, setDatasetTeam1] = useState({})
     const [datasetTeam2, setDatasetTeam2] = useState({})
 
+    const [team1AtRiskPlayers, setTeam1AtRiskPlayers] = useState([])
+    const [team2AtRiskPlayers, setTeam2AtRiskPlayers] = useState([])
+
     let teamOptions = teams.map((team) => {
         return {
             label: team.name,
@@ -49,12 +55,12 @@ export default function PlayerScatterplotPage({ teams, fixtures }) {
 
     let fixtureCells = fixtures.map((fixture) =>
         <div>
-            <button onClick={ () => {
+            <button onClick={() => {
                 loadFixtureIntoBarchart(fixture.team_h, fixture.team_a)
-                }
+            }
             }>
-                <FPLFixtureCell key={fixture.code} fixture={fixture} teams={teams}/>
-            </button>      
+                <FPLFixtureCell key={fixture.code} fixture={fixture} teams={teams} />
+            </button>
         </div>
     )
 
@@ -62,6 +68,9 @@ export default function PlayerScatterplotPage({ teams, fixtures }) {
         setTeam1BarChartInfo(team1ID)
         setTeam2BarChartInfo(team2ID)
         setTeamColorsBasedOnFixtureOrRelativeStrength(team1ID, team2ID)
+
+        setTeam1AtRiskPlayers(getAllAtRiskPlayersForTeamCode(players, getTeamCodeFromTeamID(teams, team1ID)))
+        setTeam2AtRiskPlayers(getAllAtRiskPlayersForTeamCode(players, getTeamCodeFromTeamID(teams, team2ID)))
     }
 
     // Given two team IDs,
@@ -79,12 +88,10 @@ export default function PlayerScatterplotPage({ teams, fixtures }) {
             let team2 = getFirstOccurenceOfPropertyValueFromArray(teams, "id", team2ID)
             let team1Strength = team1.strength_overall_home + team1.strength_overall_away
             let team2Strength = team2.strength_overall_home + team2.strength_overall_away
-            console.log("comparing teams relative strength, team 1: " + team1Strength + " VS. team 2: " + team2Strength)
             if (team1Strength > team2Strength) {
                 setTeam1Color(FixtureDifficultyColorConstants.hard)
                 setTeam2Color(FixtureDifficultyColorConstants.easy)
             } else if (team1Strength < team2Strength) {
-                console.log("team 2 is stronger")
                 setTeam1Color(FixtureDifficultyColorConstants.easy)
                 setTeam2Color(FixtureDifficultyColorConstants.hard)
             } else {
@@ -93,9 +100,8 @@ export default function PlayerScatterplotPage({ teams, fixtures }) {
             }
         } else {
             // Or else use the challenge level in the fixture data
-            console.log("getting teams challenge level")
-            setTeam1Color(getTeamChallengeLevelColor(fixture, team1ID))
-            setTeam2Color(getTeamChallengeLevelColor(fixture, team2ID))
+            setTeam2Color(getTeamChallengeLevelColor(fixture, team1ID))
+            setTeam1Color(getTeamChallengeLevelColor(fixture, team2ID))
         }
     }
 
@@ -120,10 +126,50 @@ export default function PlayerScatterplotPage({ teams, fixtures }) {
         console.log(getTeamChallengeLevelColor(fixtures, currentTeam.id))
     }
 
-    function summaryStatement() {
+    function TeamAtRiskPlayerCells(props) {
+        var tableData = []
+        for (let player of props.atRiskPlayers) {
+            var reason = ""
+            if (player.news.length != 0) {
+                reason = player.news
+            } else if (parseInt(player.yellow_cards) == 4) {
+                reason = "Has " + player.yellow_cards + " yellow cards."
+                console.log("Yellow card suspended: ")
+                console.log(player)
+            } else if (player.red_cards >= 1 || player.yellow_cards > 4) {
+                reason = "Has been suspended due to too many red/yellow cards."
+            }
+
+            if (reason != "") {
+                tableData.push(
+                    <tbody key={player.id}>
+                        <tr>
+                            <td>{player.first_name + " " + player.second_name}</td>
+                            <td>{reason}</td>
+                        </tr>
+                    </tbody>
+
+                )
+            }
+        }
+
+        return (
+            <table className={utilStyles.playerTable}>
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                {tableData}
+            </table>
+        )
+    }
+
+    function SummaryStatement() {
         if (datasetTeam1.data != null && datasetTeam2.data != null) {
-            return(
-                <section>
+            return (
+                <section className={utilStyles.paddingSection}>
                     <h2 className={utilStyles.headingLg}>Summary</h2>
                     <section>
                         <p className={utilStyles.headingSm}>Team Summary</p>
@@ -132,13 +178,14 @@ export default function PlayerScatterplotPage({ teams, fixtures }) {
                         <p>At an away game for {team1Name}, they are {datasetTeam1.data[3] >= datasetTeam2.data[4] ? "stronger than" : "weaker than"} {team2Name}.</p>
                         <p>Overall the {team1Name} team is {(datasetTeam1.data[0] + datasetTeam1.data[1]) >= (datasetTeam2.data[0] + datasetTeam2.data[1]) ? "stronger than" : "weaker than"} {team2Name}.</p>
                     </section>
-                    <section>
-                        <p className={utilStyles.headingSm}>Player Summary For {team1Name}</p>
+                    <section className={utilStyles.paddingSection}>
+                        <p className={utilStyles.headingSm}>Risk Players Summary For {team1Name}</p>
+                        <TeamAtRiskPlayerCells atRiskPlayers={team1AtRiskPlayers} />
                     </section>
-                    <section>
-                        <p className={utilStyles.headingSm}>Player Summary For {team2Name}</p>
+                    <section className={utilStyles.paddingSection}>
+                        <p className={utilStyles.headingSm}>Risk Players Summary For {team2Name}</p>
+                        <TeamAtRiskPlayerCells atRiskPlayers={team2AtRiskPlayers} />
                     </section>
-
                 </section>
             )
         } else {
@@ -158,50 +205,49 @@ export default function PlayerScatterplotPage({ teams, fixtures }) {
     return (
         <Layout>
             <h1 className={utilStyles.headingXl}>Team Comparer</h1>
-            <p className={utilStyles.lightText}>
-                Select two teams from the dropdowns below to compare their strength for both home and away games. 
+            <p>
+                Select two teams from the dropdowns below to compare their strength for both home and away games.
                 A summary will be generated to know at a glance which team is better in which situation. Alternatively, you
-                can click on the fixture to select those two teams to compare. Comparing two teams will also summerize any players
-                for those teams that have a game related note (ex: injuries, suspensions, etc.) or are close to being suspended (4 yellow cards).
+                can click on the fixture to select those two teams to compare. Comparing two teams will also summerize any risky players
+                for those teams. A risky player are those who have some noteworthy news (ex: injuries, suspensions, etc.), are close to
+                being suspended (4 yellow cards), or are already suspended.
             </p>
-            <p className={utilStyles.lightText}>
-                The color denotes the team's strength against the opposing team. Red is strong against, green is weak against, and blue is 
+            <p className={utilStyles.hint}>
+                The color denotes the team's strength against the opposing team. Red is strong against, green is weak against, and blue is
                 evenly matched against the opposing team.
             </p>
-            
+
             <section className={utilStyles.centeredFlexboxTeamComparePage}>
                 <section>
-                    <p className={utilStyles.headingSm}>Current GW Fixtures</p>
+                    <p className={utilStyles.headingSm}>Current GW {getCurrentGameWeek()} Fixtures</p>
                     {fixtureCells}
-                </section> 
+                </section>
                 <section className={utilStyles.centeredFlexboxTeamCompareColumn}>
                     <section className={utilStyles.centeredFlexbox}>
-                            <Dropdown
-                                label="Team 1"
-                                options={teamOptions}
-                                value={getTeamIDFromTeamName(teams, team1Name)}
-                                onChange={ (event) => {
-                                    //setTeam1BarChartInfo()
-                                    loadFixtureIntoBarchart(event.target.value, getTeamIDFromTeamName(teams, team2Name))
-                                }}
-                            />
-                            <Dropdown
-                                label="Team 2"
-                                options={teamOptions}
-                                value={getTeamIDFromTeamName(teams, team2Name)}
-                                onChange={ (event) => {
-                                    loadFixtureIntoBarchart(getTeamIDFromTeamName(teams, team1Name), event.target.value)
-                                    //setTeam2BarChartInfo(event.target.value)
-                                }}
-                            />
+                        <Dropdown
+                            label="Team 1"
+                            options={teamOptions}
+                            value={getTeamIDFromTeamName(teams, team1Name)}
+                            onChange={(event) => {
+                                loadFixtureIntoBarchart(event.target.value, getTeamIDFromTeamName(teams, team2Name))
+                            }}
+                        />
+                        <Dropdown
+                            label="Team 2"
+                            options={teamOptions}
+                            value={getTeamIDFromTeamName(teams, team2Name)}
+                            onChange={(event) => {
+                                loadFixtureIntoBarchart(getTeamIDFromTeamName(teams, team1Name), event.target.value)
+                            }}
+                        />
                     </section>
-                    <FPLBarChart 
+                    <FPLBarChart
                         datasetTeam1={datasetTeam1}
                         datasetTeam2={datasetTeam2}
-                        team1Color={team2Color}
-                        team2Color={team1Color}
+                        team1Color={team1Color}
+                        team2Color={team2Color}
                     />
-                    {summaryStatement()}
+                    <SummaryStatement />
                 </section>
             </section>
         </Layout>

@@ -12,4 +12,6 @@
   
   .backToHome {
     margin: 3rem 0 0;
+    text-decoration: none;
+    color: #38003c;
   }
