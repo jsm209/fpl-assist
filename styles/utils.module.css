@@ -196,11 +196,16 @@
   }
 
   .popup {
-    border-radius: 50px;
+    
   }
   .modal {
     font-size: 12px;
     padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid black;
+    height: 650px;
+    overflow: auto;
   }
   .modalHeader {
     width: 100%;
