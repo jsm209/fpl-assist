@@ -26,7 +26,7 @@ export default function Home({ articleData }) {
       </div>
       <Layout home>
         <Head>
-          <title>FPL Suggestions</title>
+          <title>FPL Assist</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
