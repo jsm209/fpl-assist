@@ -44,7 +44,7 @@ The main tool being planned right now is an algorithm to suggest optimal player 
 
 Other planned tools are the ability to compare two particular players with more robust visualizations, for example a polar area chart, or against some aggregated set of select players.
 
-Additionally implementing comparisons over time as opposed to comparisons only within the current game week.
+Additionally, implementing comparisons over time as opposed to comparisons only within the current game week.
 
 &nbsp;
 

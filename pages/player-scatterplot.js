@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router'
 
 // Styling
 import Layout from '../components/layout';
@@ -29,6 +30,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
 
     const playerQueryOptions = getAllPlayerQueryOptions()
     const [scatterplotDataset, setScatterplotDataset] = useState([])
+    const router = useRouter()
 
     // Query Param X
     const [queryParamX, setQueryParamX] = useState('points_per_game')
@@ -40,12 +42,25 @@ export default function PlayerScatterplotPage({ players, teams }) {
     const [maximumQueryParamY, setMaximumQueryParamY] = useState()
     const [minimumQueryParamY, setMinimumQueryParamY] = useState()
 
+    useEffect(() => {
+        if (router.query.y != null) {
+            setQueryParamY(router.query.y)
+        }
+        if (router.query.x != null) {
+            setQueryParamX(router.query.x)
+        }
+        setScatterplotDataset(prepareScatterplotPlayerData(players, router.query.x, router.query.y))
+        
+    }, [])
+
     const handleQueryParamXOnChange = (event) => {
+        clearRouterParamsIfNecessary()
         setQueryParamX(event.target.value)
         setScatterplotDataset(prepareScatterplotPlayerData(players, event.target.value, queryParamY))
     }
 
     const handleQueryParamYOnChange = (event) => {
+        clearRouterParamsIfNecessary()
         setQueryParamY(event.target.value)
         setScatterplotDataset(prepareScatterplotPlayerData(players, queryParamX, event.target.value))
     }
@@ -136,6 +151,17 @@ export default function PlayerScatterplotPage({ players, teams }) {
         },
     }
 
+    const clearRouterParamsIfNecessary = () => {
+        if (router.query != null) {
+            router.push({
+                pathname: "/player-scatterplot",
+                query: null
+              }, 
+              undefined, { shallow: true }
+              )
+        }
+    }
+
     return (
         <Layout>
             <section className={utilStyles.paddingSection}>
@@ -175,7 +201,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
                 <Dropdown
                     label="X-Axis Query "
                     options={playerQueryOptions}
-                    value={queryParamX}
+                    value={router.query.x != null ? router.query.x : queryParamX}
                     onChange={handleQueryParamXOnChange}
                 />
                 <br />

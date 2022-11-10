@@ -34,7 +34,53 @@ export default function Home({ articleData }) {
           <h1 className={utilStyles.headingXl}>Home</h1>
           <div dangerouslySetInnerHTML={{ __html: articleData.contentHtml }} />
           <p>For more information about the legitimacy and reliability of the data and future tools, <Link href={'/faq'}>click here to view the FAQ</Link>.</p>
-          <p className={utilStyles.hint}>Unsure of what to do? Try going to the "scatterplot" tool and plot "total points" versus "price value" to see the most cost effective players.</p>
+          <p className={utilStyles.hint}>Unsure of what to do? Try clicking some of the example questions below to automatically jump to a tool with prepopulated filters.</p>
+          <ul>
+            <li>
+              <Link href={{
+                pathname: "/player-scatterplot",
+                query: {
+                  x: "now_cost",
+                  y: "form"
+                }
+              }}>
+                <a>Which players have the highest form for the lowest cost?</a>
+              </Link>
+            </li>
+            <li>
+              <Link href={{
+                pathname: "/player-scatterplot",
+                query: {
+                  x: "transfers_in_event",
+                  y: "form"
+                }
+              }}>
+                <a>What are the highest form players transferred in this week?</a>
+              </Link>
+            </li>
+            <li>
+              <Link href={{
+                pathname: "/player-scatterplot",
+                query: {
+                  x: "element_type",
+                  y: "total_points"
+                }
+              }}>
+                <a>Which position (forward, defender, etc.) has the most total points?</a>
+              </Link>
+            </li>
+            <li>
+              <Link href={{
+                pathname: "/player-scatterplot",
+                query: {
+                  x: "transfers_out",
+                  y: "transfers_in"
+                }
+              }}>
+                <a>Which players have a positive (or negative) overall ratio of being transferred in vs. transferred out?</a>
+              </Link>
+            </li>
+          </ul>
         
         </section>
 
@@ -52,7 +98,7 @@ export default function Home({ articleData }) {
             <Link href={'/player-scatterplot'}>
               <a>
                 <div className={utilStyles.toolButton + " " + utilStyles.greenGradient}>
-                  <p className={utilStyles.toolButtonLabel}>Scatterplot</p>
+                  <p className={utilStyles.toolButtonLabel}>Player Scatterplot</p>
                 </div>
               </a>
             </Link>
@@ -60,7 +106,7 @@ export default function Home({ articleData }) {
             <Link href={'/team-compare'}>
               <a>
                 <div className={utilStyles.toolButton + " " + utilStyles.greenGradient}>
-                  <p className={utilStyles.toolButtonLabel}>Fixtures</p>
+                  <p className={utilStyles.toolButtonLabel}>Team Comparer</p>
                 </div>
               </a>
             </Link>
