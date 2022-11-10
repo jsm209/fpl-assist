@@ -25,14 +25,14 @@ export default function Layout({ children, home }) {
             </a>
           </Link>
           <div className={utilStyles.pageHeadingSection}>
-                <div className={styles.container}>
-                  <h2 className={utilStyles.headingPage}>
-                    <Link href="/">
-                      <a className={utilStyles.colorInherit}>{name}</a>
-                    </Link>
-                  </h2>
-                </div>
-              </div>
+            <div className={styles.container}>
+              <h2 className={utilStyles.headingPage}>
+                <Link href="/">
+                  <a className={utilStyles.colorInherit}>{name}</a>
+                </Link>
+              </h2>
+            </div>
+          </div>
         </div>
       }
 
@@ -53,18 +53,18 @@ export default function Layout({ children, home }) {
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <header className={styles.header}>
-          {home ? <></> : (
-            <>
-              
-            </>
-          )}
         </header>
+        {home ? <></> :
+          <Link href={'/'}>
+            <a className={utilStyles.backToHome}>← Back to Home</a>
+          </Link>
+        }
         <main>{children}</main>
       </div>
       <section className={utilStyles.footerSection}>
         <div className={styles.container}>
-          <div style={{display: "flex"}}>
-            <div style={{paddingRight: "60px"}}>
+          <div style={{ display: "flex" }}>
+            <div style={{ paddingRight: "60px" }}>
               <p className={utilStyles.headingSm}>FPL Assist</p>
               <div>
                 <Link href={'/'}>

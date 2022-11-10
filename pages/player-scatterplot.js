@@ -50,7 +50,7 @@ export default function PlayerScatterplotPage({ players, teams }) {
             setQueryParamX(router.query.x)
         }
         setScatterplotDataset(prepareScatterplotPlayerData(players, router.query.x, router.query.y))
-        
+
     }, [])
 
     const handleQueryParamXOnChange = (event) => {
@@ -156,9 +156,9 @@ export default function PlayerScatterplotPage({ players, teams }) {
             router.push({
                 pathname: "/player-scatterplot",
                 query: null
-              }, 
-              undefined, { shallow: true }
-              )
+            },
+                undefined, { shallow: true }
+            )
         }
     }
 

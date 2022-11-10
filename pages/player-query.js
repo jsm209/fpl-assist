@@ -113,7 +113,7 @@ export default function PlayerQueryPage({ players, teams }) {
                                             setShowPlayerModal(true)
                                             setPlayerModalInfo({ ...player, team_name: getTeamNameFromTeamCode(teams, player.team_code) })
                                         }}>
-                                            <td>{player.first_name} {player.second_name}</td>
+                                            <td><a style={{color: "black"}}>{player.first_name} {player.second_name}</a></td>
                                             <td>{getTeamNameFromTeamCode(teams, player.team_code)}</td>
                                             <td>{getPlayerDataMapping(player, queryParam)}</td>
                                         </tr>
